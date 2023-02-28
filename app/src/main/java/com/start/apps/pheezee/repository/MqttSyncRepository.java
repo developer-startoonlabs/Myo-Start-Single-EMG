@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.start.apps.pheezee.activities.WarrantyDetails;
 import com.start.apps.pheezee.pojos.AddPatientData;
+import com.start.apps.pheezee.pojos.CalbrationData;
 import com.start.apps.pheezee.pojos.CommentSessionUpdateData;
 import com.start.apps.pheezee.pojos.ConfirmEmailAndPackageId;
 import com.start.apps.pheezee.pojos.DeletePatientData;
@@ -283,11 +284,11 @@ public class MqttSyncRepository {
 
     }
 
-    public void deletePhiziouser(String str_phizioemail, String str_feedback, String str_todelete, String str_needdata) {
+    public void cal(String email_id,String date_stamp,String time_stamp) {
 
-        DeletePhiziouserData needdata   = new DeletePhiziouserData(str_phizioemail,str_feedback,str_todelete,str_needdata);
-        Call<String> deletePhiziouser = getDataService.deletePhiziouser(needdata);
-        deletePhiziouser.enqueue(new Callback<String>() {
+        CalbrationData data = new CalbrationData(email_id,date_stamp,time_stamp);
+        Call<String> cal = getDataService.cal(data);
+        cal.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if(response.code() == 200) {
@@ -303,6 +304,9 @@ public class MqttSyncRepository {
             }
         });
     }
+
+
+
 
     public void serialnumber(String str_devicemac) {
 

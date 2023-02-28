@@ -1,5 +1,7 @@
 package com.start.apps.pheezee.activities;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
@@ -26,6 +28,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -48,8 +51,11 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.type.DateTime;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
+
 import start.apps.pheezee.R;
+
 import com.start.apps.pheezee.dfu.DfuService;
 import com.start.apps.pheezee.dfu.fragment.UploadCancelFragment;
 import com.start.apps.pheezee.popup.AddDevicePopupWindow;
@@ -66,6 +72,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -77,6 +86,7 @@ import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
 import no.nordicsemi.android.dfu.DfuServiceInitiator;
 import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
 
+import static com.start.apps.pheezee.activities.PatientsView.json_phizioemail;
 import static com.start.apps.pheezee.services.PheezeeBleService.battery_percent;
 import static com.start.apps.pheezee.services.PheezeeBleService.bluetooth_state;
 import static com.start.apps.pheezee.services.PheezeeBleService.calibration_state;
@@ -173,6 +183,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements UploadCance
             @Override
             public void onClick(View v) {
                 calibrateDeviceDialog();
+
             }
         });
 
@@ -195,6 +206,16 @@ public class DeviceInfoActivity extends AppCompatActivity implements UploadCance
         if (!bluetoothAdapter.isEnabled()) {
             Toast.makeText(DeviceInfoActivity.this, "Bluetooth Disabled", Toast.LENGTH_SHORT).show();
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
@@ -428,13 +449,67 @@ public class DeviceInfoActivity extends AppCompatActivity implements UploadCance
 
     public void addPheezeeDevice(View view){
         if(deviceMacc.equalsIgnoreCase("")) {
-            if(hasPermissions() && checkLocationEnabled()) {
-                AddDevicePopupWindow feedback = new AddDevicePopupWindow(DeviceInfoActivity.this,deviceMacc,false,"Pheezee",preferences,mService);
-                feedback.showWindow();
+            if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+                Log.i("Location_status:", "working");
+                final Dialog dialog = new Dialog(DeviceInfoActivity.this);
+                dialog.setContentView(R.layout.notification_dialog_box);
+
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(dialog.getWindow().getAttributes());
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+                dialog.getWindow().setAttributes(lp);
+
+                TextView notification_title = dialog.findViewById(R.id.notification_box_title);
+                TextView notification_message = dialog.findViewById(R.id.notification_box_message);
+
+                Button Notification_Button_ok = (Button) dialog.findViewById(R.id.notification_ButtonOK);
+                Button Notification_Button_cancel = (Button) dialog.findViewById(R.id.notification_ButtonCancel);
+
+                Notification_Button_ok.setText("Yes");
+                Notification_Button_cancel.setText("No");
+
+                // Setting up the notification dialog
+                notification_title.setText("Location permission request");
+                notification_message.setText("Pheezee app needs location permission \n to connect Pheezee device");
+
+                // On click on Continue
+                Notification_Button_ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (ContextCompat.checkSelfPermission(DeviceInfoActivity.this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package", getPackageName(), null);
+                            intent.setData(uri);
+                            startActivity(intent);
+                            dialog.dismiss();
+
+                        }
+                    }
+                });
+                // On click Cancel
+                Notification_Button_cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+
+                    }
+                });
+
+                dialog.show();
+            } else if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (checkLocationEnabled()) {
+                    AddDevicePopupWindow feedback = new AddDevicePopupWindow(DeviceInfoActivity.this, deviceMacc, false, "Pheezee", preferences, mService);
+                    feedback.showWindow();
+                }
+
             }
-        }else {
+
+        } else {
             showForgetDeviceDialog_common();
         }
+
     }
 
     /**
@@ -574,22 +649,22 @@ public class DeviceInfoActivity extends AppCompatActivity implements UploadCance
         Notification_Button_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editor = preferences.edit();
-                editor.putString("deviceMacaddress","");
-                editor.apply();
-                if(mService!=null){
-                    mService.forgetPheezee();
-                    mService.disconnectDevice();
+                    editor = preferences.edit();
+                    editor.putString("deviceMacaddress", "");
+                    editor.apply();
+                    if (mService != null) {
+                        mService.forgetPheezee();
+                        mService.disconnectDevice();
+                    }
+
+                    enableScanningTheDevices();
+                    dialog.dismiss();
+                    deviceMacc = "";
+                    refreshView();
+                    AddDevicePopupWindow feedback = new AddDevicePopupWindow(DeviceInfoActivity.this, deviceMacc, false, "Pheezee", preferences, mService);
+                    feedback.showWindow();
                 }
 
-                enableScanningTheDevices();
-                dialog.dismiss();
-                deviceMacc="";
-                refreshView();
-                AddDevicePopupWindow feedback = new AddDevicePopupWindow(DeviceInfoActivity.this,deviceMacc,false,"Pheezee",preferences,mService);
-                feedback.showWindow();
-
-            }
         });
         // On click Cancel
         Notification_Button_cancel.setOnClickListener(new View.OnClickListener() {
@@ -635,6 +710,13 @@ public class DeviceInfoActivity extends AppCompatActivity implements UploadCance
                 @Override
                 public void onClick(View v) {
                     if (btn_start_calibration.getText().toString().equalsIgnoreCase("start")) {
+//                        SharedPreferences.Editor device_id = editor.putString("deviceMacaddress", "");
+//                        deviceMacc = "";
+                        String email_id = json_phizioemail;
+                        String date_stamp = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                        String time_stamp = new SimpleDateFormat("HH:mm:ss",Locale.getDefault()).format(new Date());
+                        repository.cal(email_id,date_stamp,time_stamp);
+
                         tv_status_calibrate.setText("Calibrating");
                         tv_status_calibrate.setTextColor(getResources().getColor(R.color.pitch_black));
 
@@ -933,7 +1015,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements UploadCance
                     tv_connection_status.setText("Connected");
                     my_device_image.setImageResource(R.drawable.my_device_image_connected);
                     tv_deviceinfo_device_connected.setVisibility(View.GONE);
-                    tv_deviceinfo_device_disconnected.setVisibility(View.VISIBLE);
+                    tv_deviceinfo_device_disconnected.setVisibility(View.INVISIBLE);
                     mDeviceState = true;
                 }else {
                     tv_calibrate_device.setVisibility(View.GONE);
@@ -944,7 +1026,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements UploadCance
                     tv_update_firmware.setVisibility(View.GONE);
                     tv_connection_status.setText("Not Connected");
                     tv_deviceinfo_device_connected.setVisibility(View.VISIBLE);
-                    tv_deviceinfo_device_disconnected.setVisibility(View.GONE);
+                    tv_deviceinfo_device_disconnected.setVisibility(View.INVISIBLE);
                     if(deviceMacc.equals("")) {
                         my_device_image.setImageResource(R.drawable.my_device_pheezee);
                     }else my_device_image.setImageResource(R.drawable.my_device_image_disconnected);
@@ -1474,7 +1556,7 @@ public class DeviceInfoActivity extends AppCompatActivity implements UploadCance
     }
 
     private void startDfuService(){
-        if(Build.VERSION.SDK_INT>=26)
+        if(Build.VERSION.SDK_INT>=30)
             DfuServiceInitiator.createDfuNotificationChannel(this);
         if (isDfuServiceRunning()) {
             showUploadCancelDialog();

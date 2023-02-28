@@ -3,25 +3,45 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/drawable/ic_dk_leftkneeextensionrectus_femoris.xml" value="0.1712962962962963" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/drawable/ic_dp_ankleextensor_digitorum_longus_anterior.xml" value="0.15208333333333332" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/drawable/ic_dp_wristpalmaris_longus.xml" value="0.15208333333333332" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/drawable/ic_fb_left_wrist_isometric.xml" value="0.17083333333333334" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/drawable/ic_fb_right_wrist_extension.xml" value="0.17083333333333334" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/drawable/ic_group_8943.xml" value="0.18769230769230769" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/activity_app_info.xml" value="0.2" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/activity_change_password.xml" value="0.264" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/activity_delete_account_one.xml" value="0.25" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/activity_delete_account_two.xml" value="0.25" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/activity_device_info.xml" value="0.19635416666666666" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/activity_monitor_updated.xml" value="0.15208333333333332" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/activity_my_account_pannel.xml" value="0.2777777777777778" />
-        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/activity_patients_view.xml" value="0.2" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/activity_patients_view.xml" value="0.136" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/activity_pdf.xml" value="0.152" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/activity_phizio_profile.xml" value="0.536" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/activity_report.xml" value="0.15677083333333333" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/activity_scanner.xml" value="0.15625" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/activity_session_report.xml" value="0.2109375" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/add_device_popup.xml" value="0.1546875" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/app_bar_patients_view.xml" value="0.2" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/content_patients_view.xml" value="0.152" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/dfu_popupwindow.xml" value="0.4" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/layout_patient_options.xml" value="0.19166666666666668" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/nav_header_patients_view.xml" value="0.25" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/notification_dialog_box.xml" value="0.1296875" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/patient_layout.xml" value="0.176" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/pheezee_placement_error_popup.xml" value="0.176" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/physiofeedback_popup.xml" value="0.264" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/popup.xml" value="0.25" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/profile_edit_layout.xml" value="0.19166666666666668" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/session_summary.xml" value="0.2109375" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/session_summary_large.xml" value="0.16510416666666666" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/session_summary_standard.xml" value="0.2109375" />
+        <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/set_profile_photo_layout.xml" value="0.19166666666666668" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/spinner_layout_experience.xml" value="0.13148148148148148" />
         <entry key="..\:/Backup Code/Option/pheezeeandroid-1/app/src/main/res/menu/activity_patients_view_drawer.xml" value="0.536" />
+        <entry key="..\:/Github Code/3.0.18/Backup Code/Option/pheezeeandroid-1/app/src/main/res/drawable/ic_dk_leftkneeisometricrectus_femoris.xml" value="0.136" />
+        <entry key="..\:/Github Code/3.0.18/Backup Code/Option/pheezeeandroid-1/app/src/main/res/layout/popup.xml" value="0.15625" />
         <entry key="..\:/Option/pheezeeandroid-1/app/src/main/res/drawable-v21/waranty_card.xml" value="0.16458333333333333" />
         <entry key="..\:/Option/pheezeeandroid-1/app/src/main/res/drawable-xxxhdpi/delete_bt.xml" value="0.16458333333333333" />
         <entry key="..\:/Option/pheezeeandroid-1/app/src/main/res/drawable-xxxhdpi/green_back_arrow_w.xml" value="0.15260416666666668" />

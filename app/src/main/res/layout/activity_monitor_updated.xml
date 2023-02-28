@@ -23,6 +23,7 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/iv_back_monitor"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -35,13 +36,13 @@
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_marginStart="14dp"
-                android:layout_marginTop="12dp"
                 android:text="@string/monitor"
                 android:textColor="@color/good_green"
                 android:textSize="20sp"
+                android:gravity="center"
                 app:layout_constraintStart_toEndOf="@+id/iv_back_monitor"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -89,6 +90,21 @@
                 app:layout_constraintBottom_toBottomOf="@+id/theme_smiley"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/theme_smiley" />
+
+            <ImageView
+                android:id="@+id/device_pairing"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:visibility="visible"
+                android:src="@drawable/ic_device"
+                app:layout_constraintBottom_toBottomOf="@+id/theme_smiley"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/theme_smiley" />
+
+
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.appcompat.widget.Toolbar>

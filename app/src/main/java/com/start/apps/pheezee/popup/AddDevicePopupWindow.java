@@ -211,7 +211,7 @@ public class AddDevicePopupWindow {
                 }
             });
 
-            add_device_ble_scan.setOnClickListener(new View.OnClickListener() {
+                add_device_ble_scan.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     to_scan_devices_activity = new Intent(context, ScanDevicesActivity.class);

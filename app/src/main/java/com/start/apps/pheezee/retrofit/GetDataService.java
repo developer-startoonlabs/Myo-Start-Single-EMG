@@ -1,6 +1,7 @@
 package com.start.apps.pheezee.retrofit;
 
 import com.start.apps.pheezee.pojos.AddPatientData;
+import com.start.apps.pheezee.pojos.CalbrationData;
 import com.start.apps.pheezee.pojos.CommentSessionUpdateData;
 import com.start.apps.pheezee.pojos.ConfirmEmailAndPackageId;
 import com.start.apps.pheezee.pojos.DeletePatientData;
@@ -161,6 +162,9 @@ public interface GetDataService {
 
     @POST("/api/delete-phiziouser")
     Call<String> deletePhiziouser(@Body DeletePhiziouserData data);
+
+    @POST("/api/phizio/calbirations")
+    Call<String> cal(@Body CalbrationData data);
 
     @POST("/api/get-warranty-details")
     Call<String> warrantyDetails(@Body WarrantyData data);

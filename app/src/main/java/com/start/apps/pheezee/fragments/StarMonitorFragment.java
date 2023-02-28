@@ -850,8 +850,8 @@ public class StarMonitorFragment extends Fragment implements MqttSyncRepository.
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                ((MonitorActivity)getActivity()).sendBodypartDataToDevice(bodypart, body_orientation, patientname, exercise_position,
-                        muscle_position, bodypart_position, orientation_position);
+//                ((MonitorActivity)getActivity()).sendBodypartDataToDevice(bodypart, body_orientation, patientname, exercise_position,
+//                        muscle_position, bodypart_position, orientation_position);
             }
         }, 100);
         rawdata_timestamp = Calendar.getInstance().getTime();
@@ -1508,8 +1508,8 @@ public class StarMonitorFragment extends Fragment implements MqttSyncRepository.
                         public void run() {
                             deviceState = true;
                             if(mSessionStarted) {
-                                ((MonitorActivity)getActivity()).sendBodypartDataToDevice(bodypart, body_orientation, patientname, exercise_position,
-                                        muscle_position, bodypart_position, orientation_position);
+//                                ((MonitorActivity)getActivity()).sendBodypartDataToDevice(bodypart, body_orientation, patientname, exercise_position,
+//                                        muscle_position, bodypart_position, orientation_position);
                             }
                             if(deviceDisconnectedDialog!=null) {
                                 deviceDisconnectedDialog.dismiss();
@@ -1551,8 +1551,8 @@ public class StarMonitorFragment extends Fragment implements MqttSyncRepository.
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                ((MonitorActivity)getActivity()).sendBodypartDataToDevice(bodypart, body_orientation, patientname, exercise_position,
-                                        muscle_position, bodypart_position, orientation_position);
+//                                ((MonitorActivity)getActivity()).sendBodypartDataToDevice(bodypart, body_orientation, patientname, exercise_position,
+//                                        muscle_position, bodypart_position, orientation_position);
                             }
                         },500);
                     }

@@ -1,13 +1,24 @@
 package com.start.apps.pheezee.activities;
 
+import static android.Manifest.permission.ACCESS_BACKGROUND_LOCATION;
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS;
+import static android.Manifest.permission.BLUETOOTH;
+import static android.Manifest.permission.BLUETOOTH_ADMIN;
+import static android.Manifest.permission.BLUETOOTH_CONNECT;
+import static android.Manifest.permission.BLUETOOTH_SCAN;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.Manifest.permission_group.CAMERA;
 import static android.os.Build.VERSION.SDK_INT;
 
 import static androidx.viewbinding.BuildConfig.VERSION_NAME;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.app.job.JobInfo;
@@ -34,6 +45,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.FileUtils;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -73,6 +85,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -86,7 +99,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+
 import start.apps.pheezee.R;
+
 import com.start.apps.pheezee.adapters.PatientsRecyclerViewAdapter;
 import com.start.apps.pheezee.classes.MyBottomSheetDialog;
 import com.start.apps.pheezee.pojos.DeletePatientData;
@@ -114,11 +129,13 @@ import com.start.apps.pheezee.utils.NetworkOperations;
 import com.start.apps.pheezee.utils.PackageOperations;
 import com.start.apps.pheezee.utils.PackageTypes;
 import com.start.apps.pheezee.utils.RegexOperations;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -126,6 +143,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
+import static com.facebook.FacebookSdk.getApplicationContext;
 import static com.start.apps.pheezee.services.PheezeeBleService.health_error_present_in_device;
 import static com.start.apps.pheezee.services.PheezeeBleService.jobid_sync_data_to_server;
 import static com.start.apps.pheezee.services.PheezeeBleService.show_device_health_error;
@@ -155,11 +173,16 @@ public class PatientsView extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         PatientsRecyclerViewAdapter.onItemClickListner, MqttSyncRepository.onServerResponse {
     private static final int PERMISSION_REQUEST_CODE = 333;
+    private static final int REQUEST_CALL = 26;
     private double latitude = 0, longitude = 0;
     private static final int REQUEST_FINE_LOCATION = 14;
+    private static final int REQUEST_COARSE_LOCATION = 15;
+    private static final int REQUEST_EXTERNAL_STORAGE = 16;
+    private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 17;
     public static final int REQ_CAMERA = 17;
     public static final int REQ_GALLERY = 18;
-//    private ReviewManager manager;
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 200;
+    //    private ReviewManager manager;
 //    private ReviewInfo reviewInfo;
     PheezeeBleService mService;
     private boolean mDeviceState = false, mDeviceDeactivated = false, mDeviceHealthError = false, mInsideHome = true;
@@ -197,7 +220,7 @@ public class PatientsView extends AppCompatActivity
     ProgressDialog progress, deletepatient_progress;
     SearchView searchView;
     MqttSyncRepository repository;
-    public static String json_phizioemail = "";
+    public static String json_phizioemail = "kranthikiran7702@gmail.com";
     public static int phizio_packagetype = 0;
     public static int patient_limit = 200;
     ConstraintLayout cl_phizioProfileNavigation;
@@ -223,14 +246,14 @@ public class PatientsView extends AppCompatActivity
         setContentView(R.layout.activity_patients_view);
 
 
-
         initializeView();
         getFirmwareIntentIfPresent();
         getPhizioDetails();
         setNavigation();
         setInitialMaccIfPresent();
-        checkPermissionsRequired();
-       // requestPermission();
+//        checkPermissionsRequired();
+        checkAndRequestPermissions();
+        // requestPermission();
         getLastLocationOfDevice();
         checkLocationEnabled();
         setAllListners();
@@ -241,23 +264,7 @@ public class PatientsView extends AppCompatActivity
         chekHealthStatusLogPresentAndSrartService();
         registerFirmwareUpdateReceiver();
         subscribeFirebaseFirmwareUpdateTopic();
-       // rewardFirebaseUpdateTopic();
         checkAndSyncDataToTheServer();
-
-
-//          /***  Reload Function ***/
-//
-//     final SwipeRefreshLayout refreshLayout = findViewById(R.id.refesh_layout);
-//     refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//         @Override
-//         public void onRefresh() {
-//
-//             refreshLayout.setRefreshing(false);
-//         }
-//     });
-
-
-
 
 
         deviceMacc = sharedPref.getString("deviceMacaddress", "");
@@ -277,17 +284,12 @@ public class PatientsView extends AppCompatActivity
         Pheezee_app_version_send();
 
 
-
-
     }
-
-
 
 
     private void Pheezee_app_version_send() {
         if (NetworkOperations.isNetworkAvailable(PatientsView.this)) {
-            repository.updateApp_version(json_phizioemail, "3.0.13.T");
-
+            repository.updateApp_version(json_phizioemail, "Local Server Laptop");
         }
 
     }
@@ -443,7 +445,6 @@ public class PatientsView extends AppCompatActivity
 //    }
 
 
-
     private void chekFirmwareLogPresentAndSrartService() {
         if (!Objects.requireNonNull(sharedPref.getString("firmware_log", "")).equalsIgnoreCase("")) {
             ComponentName componentName = new ComponentName(this, FirmwareLogService.class);
@@ -524,7 +525,7 @@ public class PatientsView extends AppCompatActivity
 
     private void boundToBluetoothService() {
         Intent mIntent = new Intent(this, PheezeeBleService.class);
-        bindService(mIntent, mConnection, BIND_AUTO_CREATE);
+//        bindService(mIntent, mConnection, BIND_AUTO_CREATE);
     }
 
     private void startBluetoothService() {
@@ -660,6 +661,7 @@ public class PatientsView extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 addPheezeeDevice(v);
+
             }
         });
 
@@ -724,7 +726,6 @@ public class PatientsView extends AppCompatActivity
     }
 
 
-
     private void getPhizioDetails() {
 
 //        // Timer pass setting Enable
@@ -747,17 +748,14 @@ public class PatientsView extends AppCompatActivity
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("Testing_Service:","Working Fine");
+        Log.i("Testing_Service:", "Working Fine");
 
     }
-
 
 
     @Override
     protected void onResume() {
         super.onResume();
-
-
 
 
         mInsideHome = true;
@@ -782,6 +780,7 @@ public class PatientsView extends AppCompatActivity
         Log.i("Time_Testing", "Timer Started for Logout");
         LogOutTimerTask logoutTimeTask = new LogOutTimerTask();
         timer.schedule(logoutTimeTask, 1); //auto logout in 1 minutes
+
         mInsideHome = false;
         unregisterReceiver(firmware_update_receiver);
 
@@ -841,10 +840,6 @@ public class PatientsView extends AppCompatActivity
 
 
     }
-
-
-
-
 
 
 //    @Override
@@ -944,17 +939,17 @@ public class PatientsView extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-            if (id == R.id.pheeze_device_info) {
-                Intent i = new Intent(PatientsView.this, DeviceInfoActivity.class);
-                i.putExtra("deviceMacAddress", sharedPref.getString("deviceMacaddress", ""));
-                i.putExtra("start_update", false);
-                i.putExtra("reactivate_device", false);
-                startActivityForResult(i, 13);
-            }else if(id == R.id.nav_rate) {
-                rateApp();
+        if (id == R.id.pheeze_device_info) {
+            Intent i = new Intent(PatientsView.this, DeviceInfoActivity.class);
+            i.putExtra("deviceMacAddress", sharedPref.getString("deviceMacaddress", ""));
+            i.putExtra("start_update", false);
+            i.putExtra("reactivate_device", false);
+            startActivityForResult(i, 13);
+        } else if (id == R.id.nav_rate) {
+            rateApp();
 //                rateApp();
-            }else if (id == R.id.nav_customer){
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://api.whatsapp.com/send?phone=919014528949&text=Hello Team,")));
+        } else if (id == R.id.nav_customer) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://api.whatsapp.com/send?phone=918790896481&text=Hello Team")));
 
 
 //            }
@@ -962,7 +957,7 @@ public class PatientsView extends AppCompatActivity
 //            initiatePopupWindow();
 //        } else if (id == R.id.nav_app_version) {
 //            startActivity(new Intent(PatientsView.this, AppInfo.class));
-        }else if (id == R.id.my_account) {
+        } else if (id == R.id.my_account) {
             startActivity(new Intent(PatientsView.this, MyAccountPannel.class));
         } else if (id == R.id.nav_logout) {
             //Logout Pop Code
@@ -993,7 +988,6 @@ public class PatientsView extends AppCompatActivity
 //                alert.show();
 
 
-
             editor = sharedPref.edit();
             editor.clear();
             editor.commit();
@@ -1006,10 +1000,9 @@ public class PatientsView extends AppCompatActivity
             File reportPdf = null;
 
 
-
             // For deleting all the locally saved PDFs on logout.
 //            reportPdf = new File(Environment.getExternalStorageDirectory() + "/Pheezee/files/reports");
-                reportPdf = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/PheezeeApp/files", "reports");
+            reportPdf = new File(getApplicationContext().getExternalFilesDir(null) + "/Pheezee");
             if (reportPdf.exists() && reportPdf.isDirectory()) {
                 //write same defination for it.
 
@@ -1028,10 +1021,6 @@ public class PatientsView extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
-
-
 
 
     public void drawSideBar(View view) {
@@ -1055,23 +1044,17 @@ public class PatientsView extends AppCompatActivity
     }
 
 
-
-    public void rateApp()
-    {
-        try
-        {
+    public void rateApp() {
+        try {
             Intent rateIntent = rateIntentForUrl("market://details");
             startActivity(rateIntent);
-        }
-        catch (ActivityNotFoundException e)
-        {
+        } catch (ActivityNotFoundException e) {
             Intent rateIntent = rateIntentForUrl("https://play.google.com/store/apps/details");
             startActivity(rateIntent);
         }
     }
 
-    private Intent rateIntentForUrl(String url)
-    {
+    private Intent rateIntentForUrl(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("%s?id=%s", url, getPackageName())));
         int flags = Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_MULTIPLE_TASK;
         flags |= Intent.FLAG_ACTIVITY_NEW_DOCUMENT;
@@ -1080,16 +1063,16 @@ public class PatientsView extends AppCompatActivity
     }
 
 
-    private void showpop(){
+    private void showpop() {
 
 
         ReviewManager manager = ReviewManagerFactory.create(PatientsView.this);
         Task<ReviewInfo> request = manager.requestReviewFlow();
         request.addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-                Log.e("Status: ","Working");
+            if (task.isSuccessful()) {
+                Log.e("Status: ", "Working");
                 ReviewInfo reviewInfo = task.getResult();
-                Task<Void> flow = manager.launchReviewFlow(PatientsView.this,reviewInfo);
+                Task<Void> flow = manager.launchReviewFlow(PatientsView.this, reviewInfo);
                 flow.addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void result) {
@@ -1098,9 +1081,8 @@ public class PatientsView extends AppCompatActivity
                 });
 
 
-            }
-            else{
-                Log.e("Status: ","Not Working");
+            } else {
+                Log.e("Status: ", "Not Working");
             }
         });
     }
@@ -1142,24 +1124,71 @@ public class PatientsView extends AppCompatActivity
 
         if (!ble_status_global) {
             startBluetoothRequest();
-
         }
 
-        if (!hasLocationPermissions()) {
-            requestLocationPermission();
+//        if(!hasLocationPermissions()) {
+//            requestLocationPermission();
+//        }
+        if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+            Log.i("Location_status:", "working");
+            final Dialog dialog = new Dialog(PatientsView.this);
+            dialog.setContentView(R.layout.notification_dialog_box);
 
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(dialog.getWindow().getAttributes());
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+            dialog.getWindow().setAttributes(lp);
+
+            TextView notification_title = dialog.findViewById(R.id.notification_box_title);
+            TextView notification_message = dialog.findViewById(R.id.notification_box_message);
+
+            Button Notification_Button_ok = (Button) dialog.findViewById(R.id.notification_ButtonOK);
+            Button Notification_Button_cancel = (Button) dialog.findViewById(R.id.notification_ButtonCancel);
+
+            Notification_Button_ok.setText("Yes");
+            Notification_Button_cancel.setText("No");
+
+            // Setting up the notification dialog
+            notification_title.setText("Location permission request");
+            notification_message.setText("Pheezee app needs location permission \n to connect Pheezee device");
+
+            // On click on Continue
+            Notification_Button_ok.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (ContextCompat.checkSelfPermission(PatientsView.this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getPackageName(), null);
+                        intent.setData(uri);
+                        startActivity(intent);
+                        dialog.dismiss();
+
+                    }
+                }
+            });
+            // On click Cancel
+            Notification_Button_cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+
+                }
+            });
+
+            dialog.show();
+        } else if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Log.d("Check", "permission_Granted");
+            if (ble_status_global && checkLocationEnabled()) {
+                deviceMacc = sharedPref.getString("deviceMacaddress", "");
+                feedback = new AddDevicePopupWindow(PatientsView.this, deviceMacc, connected_state, "Pheezee", sharedPref, mService, usb_state_var);
+                feedback.showWindow();
+            }
         }
 
-        if (ble_status_global && hasLocationPermissions() && hasPermissions() && checkLocationEnabled()) {
 
-            deviceMacc = sharedPref.getString("deviceMacaddress", "");
-            feedback = new AddDevicePopupWindow(PatientsView.this, deviceMacc, connected_state, "Pheezee", sharedPref, mService, usb_state_var);
-            feedback.showWindow();
-
-        }
     }
-
-
 
 
     public void showForgetDeviceDialog() {
@@ -1314,7 +1343,7 @@ public class PatientsView extends AppCompatActivity
         if (Objects.requireNonNull(sharedPref.getString("deviceMacaddress", "")).equals("") && !mDeviceState) {
             Toast.makeText(this, "First add Pheezee to your application", Toast.LENGTH_LONG).show();
         } else if (!(iv_device_connected.getVisibility() == View.VISIBLE)) {
-            Toast.makeText(this, "Make sure that Pheezee is on", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "First add Pheezee to your application", Toast.LENGTH_LONG).show();
         } else {
             if (deviceBatteryPercent < 15) {
 
@@ -1843,8 +1872,20 @@ public class PatientsView extends AppCompatActivity
 
     private void startBluetoothRequest() {
         Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
+
+
 
     @Override
     public void onItemClick(PhizioPatients patient, View view) {
@@ -2250,11 +2291,7 @@ public class PatientsView extends AppCompatActivity
                 if (mService != null)
                     DeviceErrorCodesAndDialogs.showDeviceErrorDialog(mService.getHealthErrorString(), PatientsView.this);
             }
-//            else if(action.equalsIgnoreCase(device_deactivated)){
-//                mDeviceDeactivated = true;
-//                showDeviceDeactivatedDialog();
-//                cancelDeviceDeactivatedJob();
-//            }
+
         }
     };
 
@@ -2300,12 +2337,27 @@ public class PatientsView extends AppCompatActivity
     }
 
     private boolean hasLocationPermissions() {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
+
+
     private void requestLocationPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+        ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
     }
+
+    private boolean locationpermission(){
+        if(ContextCompat.checkSelfPermission(this,ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION},REQUEST_FINE_LOCATION);
+            Log.d("kranthi_Location","PERMISSION_GRANTED");
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+            Log.d("kranthi_Location","PERMISSION_DENIED");
+        }
+        return false;
+    }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -2315,8 +2367,10 @@ public class PatientsView extends AppCompatActivity
                 if (grantResults.length > 0) {
                     boolean READ_EXTERNAL_STORAGE = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean WRITE_EXTERNAL_STORAGE = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean  ACCESS_FINE_LOCATION = grantResults[2] == PackageManager.PERMISSION_GRANTED;
 
-                    if (READ_EXTERNAL_STORAGE && WRITE_EXTERNAL_STORAGE) {
+                    if (READ_EXTERNAL_STORAGE && WRITE_EXTERNAL_STORAGE && ACCESS_FINE_LOCATION) {
+
                         // perform action when allow permission success
                     } else {
                         Toast.makeText(this, "Allow permission for storage access!", Toast.LENGTH_SHORT).show();
@@ -2338,6 +2392,7 @@ public class PatientsView extends AppCompatActivity
             }
         }
     }
+
 
 
     private void initializeView() {
@@ -2437,60 +2492,62 @@ public class PatientsView extends AppCompatActivity
         cl_phizioProfileNavigation = view.findViewById(R.id.phizioProfileNavigation);
     }
 
-    private void checkPermissionsRequired() {
 
-       if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE}, 1);
-        }
-        hasPermissions();
-    }
-        //external storage permission
-       /*if (SDK_INT >= Build.VERSION_CODES.R) {
-            return Environment.isExternalStorageManager();
-        } else {
-            int result = ContextCompat.checkSelfPermission(PatientsView.this, READ_EXTERNAL_STORAGE);
-            int result1 = ContextCompat.checkSelfPermission(PatientsView.this, WRITE_EXTERNAL_STORAGE);
-            return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
-        }
-    }
+    private  boolean checkAndRequestPermissions() {
 
-    private void requestPermission() {
-        if (SDK_INT >= Build.VERSION_CODES.R) {
-            try {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                intent.addCategory("android.intent.category.DEFAULT");
-                intent.setData(Uri.parse(String.format("package:%s",getApplicationContext().getPackageName())));
-                startActivityForResult(intent, 2296);
-            } catch (Exception e) {
-                Intent intent = new Intent();
-                intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                startActivityForResult(intent, 2296);
+
+        int locationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        int permissionStorage = ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE);
+        int permissionCamera = ContextCompat.checkSelfPermission(this, CAMERA);
+        int phonePermission = ContextCompat.checkSelfPermission(this,READ_PHONE_STATE);
+        int bluetooth_permission = ContextCompat.checkSelfPermission(this,BLUETOOTH_CONNECT);
+        int bluetooth_permission_2 = ContextCompat.checkSelfPermission(this,BLUETOOTH_SCAN);
+
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (locationPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (permissionStorage != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (permissionCamera != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+        if(phonePermission != PackageManager.PERMISSION_GRANTED){
+            listPermissionsNeeded.add(READ_PHONE_STATE);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if(bluetooth_permission_2 != PackageManager.PERMISSION_GRANTED){
+                listPermissionsNeeded.add(BLUETOOTH_SCAN);
             }
-        } else {
-            //below android 11
-            ActivityCompat.requestPermissions(PatientsView.this, new String[]{WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-        }
-    }*/
-
-
-
- /*      if (SDK_INT >= Build.VERSION_CODES.R) {
-            if (Environment.isExternalStorageManager()) {
-                startActivity(new Intent(this, PatientsView.class));
-            } else { //request for the permission
-                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                intent.setData(uri);
-                startActivity(intent);
+            if(bluetooth_permission != PackageManager.PERMISSION_GRANTED){
+                listPermissionsNeeded.add(BLUETOOTH_CONNECT);
             }
-        } else {
-            //below android 11=======
-            startActivity(new Intent(this, PatientsView.class));
-            ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
+
         }
 
 
-    }*/
+//        if(bluetooth_permission_2 != PackageManager.PERMISSION_GRANTED){
+//            listPermissionsNeeded.add(BLUETOOTH_SCAN);
+//        }
+//        if(bluetooth_permission != PackageManager.PERMISSION_GRANTED){
+//            listPermissionsNeeded.add(BLUETOOTH_SCAN);
+//        }
+
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),REQUEST_ID_MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
+    }
+
+//    private void checkPermissionsRequired() {
+//
+//              if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE}, 1);
+//        }
+//        hasPermissions();
+//    }
 
 
 
@@ -2499,10 +2556,11 @@ public class PatientsView extends AppCompatActivity
 
 
 
-// Change this Block
+
+    // Change this Block
     public void getLastLocationOfDevice() {
         FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -2547,7 +2605,7 @@ public class PatientsView extends AppCompatActivity
         if (Objects.requireNonNull(sharedPref.getString("deviceMacaddress", "")).equals("") && !mDeviceState) {
             Toast.makeText(this, "First add Pheezee to your application", Toast.LENGTH_LONG).show();
         } else if (!(iv_device_connected.getVisibility()==View.VISIBLE)  ) {
-            Toast.makeText(this, "Make sure that Pheezee is on", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "First add Pheezee to your application", Toast.LENGTH_LONG).show();
         }
         else {
             if(deviceBatteryPercent<15){
@@ -2662,6 +2720,11 @@ public class PatientsView extends AppCompatActivity
         }
 
     }
+
+
+
+
+
     private class LogOutTimerTask extends TimerTask {
 
         @Override
@@ -2676,7 +2739,9 @@ public class PatientsView extends AppCompatActivity
             NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancelAll();
             File reportPdf = null;
-            reportPdf = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/PheezeeApp/files", "reports");
+            reportPdf = new File(getApplicationContext().getExternalFilesDir(null)+"/Pheezee");
+
+
 
 
 
@@ -2701,5 +2766,6 @@ public class PatientsView extends AppCompatActivity
         }
 
     }
+
 
 }

@@ -24,11 +24,18 @@
         android:orientation="vertical"
         tools:layout_editor_absoluteY="60dp">
 
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_margin="25dp"
+            android:layout_height="250dp">
+
+        </androidx.cardview.widget.CardView>
+
         <LinearLayout
             android:id="@+id/ll_device_and_bluetooth"
             android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:background="@drawable/drawable_background_connect_to_pheezee"
             android:orientation="vertical">
 
@@ -204,7 +211,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#FFFFFF"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:layout_editor_absoluteX="0dp">
 
@@ -290,7 +297,7 @@
         android:nestedScrollingEnabled="true"
         android:src="@mipmap/ic_add_patient"
         android:translationZ="0.0dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

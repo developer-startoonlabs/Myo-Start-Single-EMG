@@ -198,8 +198,8 @@ public class BodyPartSelectionRecyclerViewAdapter extends RecyclerView.Adapter<B
 
         primary_muscle_lookuptable.put("lumbarflexion","Rectus Abdominis");
         primary_muscle_lookuptable.put("lumbarextension","Quadratus Lumborum");
-        primary_muscle_lookuptable.put("lumbarlateral flexion","Quadratus Lumborum");
-        primary_muscle_lookuptable.put("lumbarrotation","External Oblique");
+        primary_muscle_lookuptable.put("lumbarlateral flexion","Psoas major");
+        primary_muscle_lookuptable.put("lumbarrotation","Multifidus");
         primary_muscle_lookuptable.put("lumbarisometric","Select Muscle*");
 
         primary_muscle_lookuptable.put("abdomenflexion","Rectus Abdominis");

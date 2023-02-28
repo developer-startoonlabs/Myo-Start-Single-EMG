@@ -14,6 +14,7 @@ import no.nordicsemi.android.dfu.DfuSettingsConstants;
 
 public class SettingsFragment extends PreferenceFragment implements DfuSettingsConstants, SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String SETTINGS_KEEP_BOND = "settings_keep_bond";
+    private static final String SETTINGS_DEFAULT_MBR_SIZE = "setting_default_mbr_size";
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {

@@ -175,25 +175,25 @@
     <LinearLayout
         android:id="@+id/ll_session_duration"
         android:visibility="gone"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="horizontal"
-        android:layout_margin="15sp"
+        android:layout_margin="0dp"
         android:gravity="center">
 
         <TextView
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:text="Session Duration: "
             android:textColor="@color/good_green"
             android:textSize="14sp"></TextView>
         <TextView
             android:id="@+id/tv_session_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:textColor="@color/pitch_black"
             android:textSize="14sp"
             android:text=" -  "></TextView>

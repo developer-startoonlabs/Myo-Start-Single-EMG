@@ -95,7 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="15dp"
-            android:text="I have a privacy Concern"
+            android:text="I have a privacy concern"
             android:fontFamily="@font/ebrima"
             android:textColor="#000000"
             android:textSize="15dp"/>

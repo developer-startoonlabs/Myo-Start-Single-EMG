@@ -1,5 +1,9 @@
 package com.start.apps.pheezee.fragments;
-
+/**
+ * Date of commented : 27-10-2022
+ * Commented By : Burra Kranthi Kiran
+ * Description : Included all import files related to StandradGoldTeachFragment screen
+ */
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -80,23 +84,24 @@ import java.util.List;
 import java.util.Objects;
 import android.util.Log;
 
-import static com.start.apps.pheezee.activities.MonitorActivity.IS_SCEDULED_SESSION;
-import static com.start.apps.pheezee.activities.MonitorActivity.IS_SCEDULED_SESSIONS_COMPLETED;
-import static com.start.apps.pheezee.activities.MonitorActivity.show_popup_once;
-import static com.start.apps.pheezee.activities.MonitorActivity.total_sceduled_size;
-import static com.start.apps.pheezee.utils.PackageTypes.ACHEDAMIC_TEACH_PLUS;
-import static com.start.apps.pheezee.utils.PackageTypes.GOLD_PACKAGE;
-import static com.start.apps.pheezee.utils.PackageTypes.GOLD_PLUS_PACKAGE;
+import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.start.apps.pheezee.activities.MonitorActivity.IS_SCEDULED_SESSION;/** this will checked like boolean type the session is scheduled **/
+import static com.start.apps.pheezee.activities.MonitorActivity.IS_SCEDULED_SESSIONS_COMPLETED;/** this will checked like boolean type the session_completion is scheduled **/
+import static com.start.apps.pheezee.activities.MonitorActivity.show_popup_once;/** this will get from monitor screen pop function**/
+import static com.start.apps.pheezee.activities.MonitorActivity.total_sceduled_size; /** Here we are getting the Values from ble hardware**/
+import static com.start.apps.pheezee.utils.PackageTypes.ACHEDAMIC_TEACH_PLUS;/** This is used for geting the current phizio user package type ACHEDAMIC_TEACH_PLUS **/
+import static com.start.apps.pheezee.utils.PackageTypes.GOLD_PACKAGE;/** This is used for geting the current phizio user package type GOLD_PACKAGE **/
+import static com.start.apps.pheezee.utils.PackageTypes.GOLD_PLUS_PACKAGE;/** This is used for geting the current phizio user package type GOLD_PLUS_PACKAGE **/
 import static com.start.apps.pheezee.utils.PackageTypes.MIN_PEAK_DECIDED;
 import static com.start.apps.pheezee.utils.PackageTypes.PERCENTAGE_TEXT_TO_SPEACH_EMG_PEAK;
-import static com.start.apps.pheezee.utils.PackageTypes.STANDARD_PACKAGE;
-import static com.start.apps.pheezee.utils.PackageTypes.TEACH_PACKAGE;
-import static com.start.apps.pheezee.services.PheezeeBleService.battery_percent;
-import static com.start.apps.pheezee.services.PheezeeBleService.bluetooth_state;
-import static com.start.apps.pheezee.services.PheezeeBleService.device_disconnected_firmware;
-import static com.start.apps.pheezee.services.PheezeeBleService.device_state;
-import static com.start.apps.pheezee.services.PheezeeBleService.session_data;
-import static com.start.apps.pheezee.services.PheezeeBleService.usb_state;
+import static com.start.apps.pheezee.utils.PackageTypes.STANDARD_PACKAGE;/** This is used for geting the current phizio user package type STANDARD_PACKAGE **/
+import static com.start.apps.pheezee.utils.PackageTypes.TEACH_PACKAGE;/** This is used for geting the current phizio user package type TEACH_PACKAGE **/
+import static com.start.apps.pheezee.services.PheezeeBleService.battery_percent;/** This is used for getting battery percent from the ble services **/
+import static com.start.apps.pheezee.services.PheezeeBleService.bluetooth_state;/** This is used for getting bluetooth state from the ble services **/
+import static com.start.apps.pheezee.services.PheezeeBleService.device_disconnected_firmware;/** This is used for getting device_disconnected_firmware from the ble services **/
+import static com.start.apps.pheezee.services.PheezeeBleService.device_state;/** This is used for getting device_state from the ble services **/
+import static com.start.apps.pheezee.services.PheezeeBleService.session_data;/** This is used for getting session_data from the ble services **/
+import static com.start.apps.pheezee.services.PheezeeBleService.usb_state;/** This is used for getting usb_state from the ble services **/
 import android.view.WindowManager;
 import com.start.apps.pheezee.classes.PatientActivitySingleton;
 public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepository.GetSessionNumberResponse {
@@ -140,6 +145,7 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
     private boolean mSessionStarted = false;
 
 
+
     private int prev_rep=0,current_rep=0,last_min_angle=360,last_max_angle=0;
     private int prev_angle=0;
     private boolean first_read=true;
@@ -154,6 +160,13 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
     private boolean can_talk = false;
 
 
+    /**
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description : This is device disconnection pop this work on the two conditions
+     * 1. Device is out of range from the mobile
+     * 2. Device not connected with fly values
+     */
 
     public void deviceDisconnectedPopup(boolean operation) {
 
@@ -210,7 +223,7 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
                 }
             });
             deviceDisconnectedDialog.show();
-            onDestroy();
+//            onDestroy();
         }else {
             message = "Please come in range to start session";
             deviceDisconnectedDialog = new Dialog(getActivity());
@@ -254,6 +267,11 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
 
     }
 
+    /**
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description : This is usb connected to hardware device pop when usb connect to device
+     */
 
     public void usbConnectedDialog(boolean operation) {
 
@@ -356,6 +374,17 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
 
     }
 
+    /**
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description: The below code onCreate is function this will default function to run the android when the MonitorActivity
+     * When this function started it will be bring the layout("UI design") and start function in background
+     * The following function run in the background
+     * Inputs: layout, layout id, Screen width size, sharedprefrance Data, Graph View and parameter(Device pop Images)
+     * Output: pop Images, EMG plotting point, ROM plotting point, ArcView Dailer Values and Graph Values
+     * Functions used here: Check the EMG Values, ROM Values, Angle correction function, start, stop, cancel, inactive button, Device Information check function and device parameter function
+     * Other functions using this: BLE Function, Server Communication Function and permission Function
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -401,7 +430,11 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
         romJsonArray = new JSONArray();
         repository = new MqttSyncRepository(getActivity().getApplication());
         repository.setOnSessionNumberResponse(this);
-
+        /**
+         * Date of commented : 27-10-2022
+         * Commented By : Burra Kranthi Kiran
+         * Description: this below function for Data Sharepreferance from previous activity
+         */
 
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -424,6 +457,12 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
 
 
 
+        /**
+         * Date of commented : 27-10-2022
+         * Commented By : Burra Kranthi Kiran
+         * Description: this below function for the filter Pheezee Hardware Values
+         */
+
 
         arcViewInside.setMinAngle(0);
         arcViewInside.setMaxAngle(0);
@@ -445,10 +484,21 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
         intentFilter.addAction(session_data);
         intentFilter.addAction(device_disconnected_firmware);
         getActivity().registerReceiver(session_data_receiver,intentFilter);
+        Log.e("device_info", String.valueOf(intentFilter));
+        Log.e("device_info",device_state);
+        Log.e("device_info",bluetooth_state);
+        Log.e("device_info",battery_percent);
+        Log.e("device_info",session_data);
 
         creatGraphView();
 
         ((MonitorActivity)getActivity()).getBasicDeviceInfo();
+
+        /**
+         * Date of commented : 27-10-2022
+         * Commented By : Burra Kranthi Kiran
+         * Description: this below function for the based on movement and bodypart we are getting device placement image.
+         */
         // custom dialog
         final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.custom_dialog_box);
@@ -461,7 +511,7 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
         str_max_angle_selected = getActivity().getIntent().getStringExtra("maxangleselected");
         str_min_angle_selected = getActivity().getIntent().getStringExtra("minangleselected");
 
-        int color = ValueBasedColorOperations.getBodyPartMaxValue(str_body_part,str_exercise_name); 
+        int color = ValueBasedColorOperations.getBodyPartMaxValue(str_body_part,str_exercise_name);
         arcViewInside.setMaxAngle(0);
         arcViewInside.setMinAngle(0);
 
@@ -502,7 +552,7 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
         if(res !=0) {
 
 
-                device_placement.setImageResource(res);
+            device_placement.setImageResource(res);
 
             TextView muscle_name = dialog.findViewById(R.id.muscle_title);
             TextView exercise_name = dialog.findViewById(R.id.device_placement_title);
@@ -555,7 +605,11 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
     }
 
 
-
+    /**
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description: this below function for EMG Zoom in  and Zoom Out
+     */
     private void setListnersOnViews() {
 
         btn_emg_increase_gain.setOnClickListener(new View.OnClickListener() {
@@ -595,6 +649,12 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
                 }
             }
         });
+
+        /**
+         * Date of commented : 27-10-2022
+         * Commented By : Burra Kranthi Kiran
+         * Description: this below function for the Timer action
+         */
 
         timer.setOnClickListener(new View.OnClickListener() {
 
@@ -668,7 +728,9 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
         });
 
         /**
-         * Cancel session
+         * Date of commented : 27-10-2022
+         * Commented By : Burra Kranthi Kiran
+         * Description: this below function for cancel the session
          */
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -720,7 +782,9 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
         });
 
         /**
-         * Stop session
+         * Date of commented : 27-10-2022
+         * Commented By : Burra Kranthi Kiran
+         * Description: this below function for the Stop session
          */
         stopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -789,7 +853,9 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
         });
 
         /**
-         * Angle correction popup
+         * Date of commented : 27-10-2022
+         * Commented By : Burra Kranthi Kiran
+         * Description: this below function for the Angle Correction.
          */
         iv_angle_correction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -913,11 +979,17 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
 //                    showToast("Please start session!");
 //                }
 
-            // END
+                // END
 
             }
         });
     }
+
+    /**
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description: this below function for the Update Values in above function call
+     */
 
     private void updateInitialValues() {
         //get intent values
@@ -982,7 +1054,11 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
             }
         }
     }
-
+    /**
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description: this below function for the Update Values parameter in above function call
+     */
 
     private void updateInitialValues(SceduledSession session) {
         //get intent values
@@ -1019,8 +1095,11 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
             orientation_position=1;
         else
             orientation_position=2;
-
-        //setting patient id and name
+        /**
+         * Date of commented : 27-10-2022
+         * Commented By : Burra Kranthi Kiran
+         * Description: this below function for setting patient id and name
+         */
         if(patientid.length()>3){
             String temp = patientid.substring(0,3)+"xxx";
             patientId.setText(temp);
@@ -1029,9 +1108,11 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
         }
 
         patientName.setText(patientname);
-
-
-        //setting session number
+        /**
+         * Date of commented : 27-10-2022
+         * Commented By : Burra Kranthi Kiran
+         * Description: this below function for setting session number
+         */
         if(phizio_packagetype!=STANDARD_PACKAGE)
             repository.getPatientSessionNo(patientid);
 
@@ -1054,9 +1135,10 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
             }
         }
     }
-
     /**
-     * Inserts the summary values in files and also tells the media to scan the files for visibility when connected to the laptop.
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description: this below function for Inserts the summary values in files and also tells the media to scan the files for visibility when connected to the laptop.
      */
     private void insertValuesAndNotifyMediaStore(String session_action) {
         new Handler().post(new Runnable() {
@@ -1128,17 +1210,23 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
         });
 
     }
-
-
     /**
-     * Updates the view of gain to default
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description: this below function for Updates the view of gain to default.
+     * Currently we are not using the this.
      */
     private void updateGainView() {
 //        btn_emg_decrease_gain.setBackgroundResource(R.drawable.round_corner_layout);
 //        btn_emg_increase_gain.setBackgroundResource(R.drawable.round_corner_layout);
     }
 
-
+    /**
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description: this below function for Start Session.
+     * Currently we are not using the this.
+     */
     public void startSession() {
         current_emg_peak_index=0;max_emg_peak_index=0;
         emgPeakList = new ArrayList<>();
@@ -1211,6 +1299,12 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
 
     }
 
+    /**
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description: this below function for Start Session after Angle Correction.
+     * Currently we are not using the this.
+     */
 
     public void startSession_angleCorrected() {
         current_emg_peak_index=0;max_emg_peak_index=0;
@@ -1260,13 +1354,19 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
         handler.postDelayed(runnable, 0);
 
     }
+    /**
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description: this below function for store raw file in local in files.
+     * Currently we are not using the this.
+     */
 
     private void initializeAndWriteInitialToFile() {
         android.text.format.DateFormat df = new android.text.format.DateFormat();
 //            String s = rawdata_timestamp.toString().substring(0, 19);
         String s = String.valueOf(DateFormat.format("yyyy-MM-dd hh-mm-ssa", rawdata_timestamp));
         String child = patientname + patientid;
-        file_dir_session_emgdata = new File(Environment.getExternalStorageDirectory() + "/Pheezee/files/EmgData/" + child + "/sessiondata/", s);
+        file_dir_session_emgdata = new File(getApplicationContext().getExternalFilesDir(null) + "/Pheezee/files/EmgData/" + child + "/sessiondata/", s);
         if (!file_dir_session_emgdata.exists()) {
             file_dir_session_emgdata.mkdirs();
         }
@@ -1308,9 +1408,11 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
             e.printStackTrace();
         }
     }
-
     /**
-     * handler for session time incrimental
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description: this below function for handler for session time incrimental.
+     * Currently we are not using the this.
      */
     public Runnable runnable = new Runnable() {
         public void run() {
@@ -1341,11 +1443,13 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
             handler.postDelayed(this, 0);
         }
     };
-
-
     /**
-     * Handler to post the values received from device in the view
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description: this below function for Handler to post the values received from device in the view
+     * Currently we are not using the this.
      */
+
     @SuppressLint("HandlerLeak")
     public final Handler myHandler = new Handler() {
         public void handleMessage(Message message) {
@@ -1644,10 +1748,12 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
 
 
 
-
     /**
-     * Close session in 2000ms once the session goal is reached
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description: this below function for Close session in 2000ms once the session goal is reached
      */
+
     private void openSuccessfullDialogAndCloseSession() {
 
         new Handler().postDelayed(new Runnable() {
@@ -1779,11 +1885,13 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
 
 
     }
-
-
     /**
-     * Refreshes the line graph
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description: this below function forRefreshes the line graph
      */
+
+
     private void creatGraphView() {
         Legend l = lineChart.getLegend();
         l.setEnabled(false);
@@ -1915,6 +2023,7 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if(action.equalsIgnoreCase(device_state)){
+                Log.e("Kranthi",device_state);
 
                 boolean device_status = intent.getBooleanExtra(device_state,false);
                 if(device_status){
@@ -1933,6 +2042,7 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
                     },2000);
                 }else {
                     deviceState = false;
+                    Log.e("Kranthi", String.valueOf(deviceState));
                     if(deviceDisconnectedDialog!=null) {
                         if (!deviceDisconnectedDialog.isShowing())
                             deviceDisconnectedPopup(mSessionStarted);
@@ -1993,9 +2103,11 @@ public class StandardGoldTeachFragment extends Fragment implements MqttSyncRepos
             }
         }
     };
-
-
-
+    /**
+     * Date of commented : 27-10-2022
+     * Commented By : Burra Kranthi Kiran
+     * Description: this below function for EMG Peak Detection Calculation
+     */
     public void emgPeakDetectionAndVoiceAleart(int emg){
         if(ui_rate==0){
             emgPeakList.add(new EmgPeak(emg,-1,-1,false));

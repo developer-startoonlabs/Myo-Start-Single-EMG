@@ -857,8 +857,8 @@ public class SmileyMonitoringFragment extends Fragment implements MqttSyncReposi
 //                mService.sendBodypartDataToDevice(bodypart, body_orientation, patientname, exercise_position,
 //                        muscle_position, bodypart_position, orientation_position);
 
-                ((MonitorActivity)getActivity()).sendBodypartDataToDevice(bodypart, body_orientation, patientname, exercise_position,
-                        muscle_position, bodypart_position, orientation_position);
+//                ((MonitorActivity)getActivity()).sendBodypartDataToDevice(bodypart, body_orientation, patientname, exercise_position,
+//                        muscle_position, bodypart_position, orientation_position);
             }
         }, 100);
         rawdata_timestamp = Calendar.getInstance().getTime();
@@ -1344,7 +1344,7 @@ public class SmileyMonitoringFragment extends Fragment implements MqttSyncReposi
         mSessionStarted=false;
         handler.removeCallbacks(runnable);
         try {
-            Objects.requireNonNull(getActivity()).unregisterReceiver(session_data_receiver);
+            requireActivity().unregisterReceiver(session_data_receiver);
         }catch (NullPointerException e){
             e.printStackTrace();
         }
@@ -1491,8 +1491,8 @@ public class SmileyMonitoringFragment extends Fragment implements MqttSyncReposi
                         public void run() {
                             deviceState = true;
                             if(mSessionStarted) {
-                                ((MonitorActivity)getActivity()).sendBodypartDataToDevice(bodypart, body_orientation, patientname, exercise_position,
-                                        muscle_position, bodypart_position, orientation_position);
+//                                ((MonitorActivity)getActivity()).sendBodypartDataToDevice(bodypart, body_orientation, patientname, exercise_position,
+//                                        muscle_position, bodypart_position, orientation_position);
                             }
                             if(deviceDisconnectedDialog!=null) {
                                 deviceDisconnectedDialog.dismiss();
@@ -1534,8 +1534,8 @@ public class SmileyMonitoringFragment extends Fragment implements MqttSyncReposi
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                ((MonitorActivity)getActivity()).sendBodypartDataToDevice(bodypart, body_orientation, patientname, exercise_position,
-                                        muscle_position, bodypart_position, orientation_position);
+//                                ((MonitorActivity)getActivity()).sendBodypartDataToDevice(bodypart, body_orientation, patientname, exercise_position,
+//                                        muscle_position, bodypart_position, orientation_position);
                             }
                         },500);
                     }

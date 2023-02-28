@@ -1,5 +1,6 @@
 package com.start.apps.pheezee.services;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.Service;
 import android.app.job.JobInfo;
@@ -230,6 +231,7 @@ public class PheezeeBleService extends Service {
         return START_NOT_STICKY;
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -309,6 +311,7 @@ public class PheezeeBleService extends Service {
     }
 
 
+    @SuppressLint("MissingPermission")
     private void startScan() {
         List<ScanFilter> filters = new ArrayList<>();
         ScanSettings settings = new ScanSettings.Builder()
@@ -485,6 +488,7 @@ public class PheezeeBleService extends Service {
 
 
 
+    @SuppressLint("MissingPermission")
     public void stopScan(){
         if (mScanning && bluetoothAdapter != null && bluetoothAdapter.isEnabled() && mBluetoothLeScanner != null) {
             mBluetoothLeScanner.stopScan(mScanCallback);
@@ -542,6 +546,7 @@ public class PheezeeBleService extends Service {
         writeCharacteristic(mCustomCharacteristic, ValueBasedColorOperations.getParticularDataToPheeze(body_orientation, muscle_position, exercise_position, Bodypart_number.get(bodypart), orientation_position),"AE");
     }
 
+    @SuppressLint("MissingPermission")
     public void disableNotificationOfSession(){
         showNotification(device_connected_notif);
         if(bluetoothGatt!=null && mCustomCharacteristicDescriptor!=null && mCustomCharacteristic!=null){
@@ -560,6 +565,7 @@ public class PheezeeBleService extends Service {
             BluetoothDevice remoteDevice = bluetoothAdapter.getRemoteDevice(deviceMacc);
             this.remoteDevice = remoteDevice;
             new Handler(getMainLooper()).post(new Runnable() {
+                @SuppressLint("MissingPermission")
                 @Override
                 public void run() {
                     bluetoothGatt = remoteDevice.connectGatt(getApplicationContext(), false, callback);
@@ -569,6 +575,7 @@ public class PheezeeBleService extends Service {
         }
     }
 
+    @SuppressLint("MissingPermission")
     public void disconnectDevice() {
         if(bluetoothGatt==null){
             return;
@@ -606,7 +613,7 @@ public class PheezeeBleService extends Service {
                 if(!deviceMacc.equalsIgnoreCase("") && !mDeviceState){
                     BluetoothDevice device = result.getDevice();
                     String deviceAddress = device.getAddress();
-                    String deviceName = device.getName();
+                    @SuppressLint("MissingPermission") String deviceName = device.getName();
                     if(deviceAddress.equalsIgnoreCase(deviceMacc)){
                         connectDevice(deviceMacc);
                     }
@@ -625,7 +632,7 @@ public class PheezeeBleService extends Service {
             String setDeviceBondState;
             BluetoothDevice device = result.getDevice();
             String deviceAddress = device.getAddress();
-            String deviceName = device.getName();
+            @SuppressLint("MissingPermission") String deviceName = device.getName();
 
             if(deviceName==null)
                 deviceName = "UNKNOWN DEVICE";
@@ -634,7 +641,7 @@ public class PheezeeBleService extends Service {
                     SystemClock.elapsedRealtime() +
                     (result.getTimestampNanos() / 1000000);
             int deviceRssi = result.getRssi();
-            int deviceBondState = device.getBondState();
+            @SuppressLint("MissingPermission") int deviceBondState = device.getBondState();
             //Just to update the bondstate if needed to
             if(deviceBondState == 0)
                 setDeviceBondState = "BONDED";
@@ -712,6 +719,7 @@ public class PheezeeBleService extends Service {
 
 
     public BluetoothGattCallback callback = new BluetoothGattCallback() {
+        @SuppressLint("MissingPermission")
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
@@ -835,6 +843,7 @@ public class PheezeeBleService extends Service {
                 }
             }
         }
+        @SuppressLint("MissingPermission")
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
@@ -961,6 +970,7 @@ public class PheezeeBleService extends Service {
             }
         }
 
+        @SuppressLint("MissingPermission")
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
@@ -1036,6 +1046,7 @@ public class PheezeeBleService extends Service {
         writeCharacteristic(mDfuCharacteristic,b,"1");
     }
 
+    @SuppressLint("MissingPermission")
     private void writeCharacteristic(BluetoothGattCharacteristic characteristic, byte[] b, String value) {
         if(bluetoothGatt!=null && characteristic!=null) {
             characteristic.setValue(b);
@@ -1062,6 +1073,7 @@ public class PheezeeBleService extends Service {
 
 
     private final BroadcastReceiver bluetoothReceiver = new BroadcastReceiver() {
+        @SuppressLint("MissingPermission")
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if(BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)){
@@ -1128,6 +1140,7 @@ public class PheezeeBleService extends Service {
         return remoteDevice.getAddress();
     }
 
+    @SuppressLint("MissingPermission")
     public String getDeviceName(){
         return remoteDevice.getName();
     }

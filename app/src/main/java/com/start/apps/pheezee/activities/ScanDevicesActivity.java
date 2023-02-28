@@ -31,7 +31,9 @@ import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
+
 import start.apps.pheezee.R;
+
 import com.start.apps.pheezee.adapters.DeviceListArrayAdapter;
 import com.start.apps.pheezee.classes.BluetoothSingelton;
 import com.start.apps.pheezee.classes.DeviceListClass;
@@ -45,6 +47,7 @@ import static com.start.apps.pheezee.services.PheezeeBleService.device_state;
 import static com.start.apps.pheezee.services.PheezeeBleService.scan_state;
 import static com.start.apps.pheezee.services.PheezeeBleService.scan_too_frequent;
 import static com.start.apps.pheezee.services.PheezeeBleService.scanned_list;
+
 import android.view.WindowManager;
 
 public class ScanDevicesActivity extends AppCompatActivity {
@@ -70,6 +73,7 @@ public class ScanDevicesActivity extends AppCompatActivity {
     boolean isBound = false;
     long first_started = 0;
     int num_of_scan = 0;
+
     @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +86,7 @@ public class ScanDevicesActivity extends AppCompatActivity {
         //Initialization
         tv_stoScan = findViewById(R.id.tv_stopscan);
         iv_back_scan_devices = findViewById(R.id.back_scan_devices);
-        lv_scandevices =findViewById(R.id.lv_deviceList);
+        lv_scandevices = findViewById(R.id.lv_deviceList);
         swipeRefreshLayout = findViewById(R.id.scandevices_swiperefresh);
         view = findViewById(R.id.scan_devices_anim);
         scan_toolbar_anim = findViewById(R.id.scan_devices_toolbar);
@@ -91,21 +95,23 @@ public class ScanDevicesActivity extends AppCompatActivity {
         mScanResults = new ArrayList<>();
         hasPermissions();
         deviceListArrayAdapter = new DeviceListArrayAdapter(this, mScanResults);
+
+
         deviceListArrayAdapter.setOnDeviceConnectPressed(new DeviceListArrayAdapter.onDeviceConnectPressed() {
             @Override
             public void onDeviceConnectPressed(String macAddress) {
-                if(mBluetoothState) {
+                if (mBluetoothState) {
                     Intent intent = new Intent();
                     if (RegexOperations.validate(macAddress)) {
 
-                        intent.putExtra("macAddress", macAddress);
+                        intent.putExtra("macAddress", "Pheezee");
                         setResult(-1, intent);
                     } else {
-                        intent.putExtra("macAddress", macAddress);
+                        intent.putExtra("macAddress", "Pheezee");
                         setResult(2, intent);
                     }
                     finish();
-                }else {
+                } else {
                     startBleRequest();
                 }
             }
@@ -114,7 +120,7 @@ public class ScanDevicesActivity extends AppCompatActivity {
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         madapter_scandevices = BluetoothSingelton.getmInstance().getAdapter();
         madapter_scandevices = bluetoothManager.getAdapter();
-        if(madapter_scandevices == null || !madapter_scandevices.isEnabled()){
+        if (madapter_scandevices == null || !madapter_scandevices.isEnabled()) {
             mBluetoothState = false;
             startBleRequest();
         }
@@ -132,34 +138,34 @@ public class ScanDevicesActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View view) {
-                    String check_operation;
-                    check_operation = tv_stoScan.getText().toString();
-                    if (check_operation.equalsIgnoreCase("Scan")) {
-                        tv_stoScan.setText(R.string.scandevices_stop);
-                        mCustomService.startScanInBackground();
-                    } else {
-                        tv_stoScan.setText(R.string.scandevices_scan);
-                        mCustomService.stopScaninBackground();
-                    }
+                String check_operation;
+                check_operation = tv_stoScan.getText().toString();
+                if (check_operation.equalsIgnoreCase("Scan")) {
+                    tv_stoScan.setText(R.string.scandevices_stop);
+                    mCustomService.startScanInBackground();
+                } else {
+                    tv_stoScan.setText(R.string.scandevices_scan);
+                    mCustomService.stopScaninBackground();
+                }
             }
         });
 
-        swipeRefreshLayout.setColorSchemeResources(R.color.good_green,R.color.pale_good_green);
+        swipeRefreshLayout.setColorSchemeResources(R.color.good_green, R.color.pale_good_green);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                    mCustomService.stopScaninBackground();
-                    mCustomService.startScanInBackground();
-                    if(tooFrequentScan) {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }else {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                swipeRefreshLayout.setRefreshing(false);
-                            }
-                        }, 2000);
-                    }
+                mCustomService.stopScaninBackground();
+                mCustomService.startScanInBackground();
+                if (tooFrequentScan) {
+                    swipeRefreshLayout.setRefreshing(false);
+                } else {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }, 2000);
+                }
             }
         });
 
@@ -168,7 +174,7 @@ public class ScanDevicesActivity extends AppCompatActivity {
 //        start_scan_handler.run();
 
         Intent mIntent = new Intent(this, PheezeeBleService.class);
-        bindService(mIntent,mConnection,BIND_AUTO_CREATE);
+        bindService(mIntent, mConnection, BIND_AUTO_CREATE);
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(device_state);
@@ -176,11 +182,21 @@ public class ScanDevicesActivity extends AppCompatActivity {
         intentFilter.addAction(scanned_list);
         intentFilter.addAction(scan_state);
         intentFilter.addAction(scan_too_frequent);
-        registerReceiver(receiver,intentFilter);
+        registerReceiver(receiver, intentFilter);
     }
 
-    private void startBleRequest(){
-        Intent enable_bluetooth  = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+    private void startBleRequest() {
+        Intent enable_bluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         startActivityForResult(enable_bluetooth, REQUEST_ENABLE_BT);
     }
 
@@ -189,9 +205,9 @@ public class ScanDevicesActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             isBound = true;
-            PheezeeBleService.LocalBinder mLocalBinder = (PheezeeBleService.LocalBinder)service;
+            PheezeeBleService.LocalBinder mLocalBinder = (PheezeeBleService.LocalBinder) service;
             mCustomService = mLocalBinder.getServiceInstance();
-            if(mBluetoothState) {
+            if (mBluetoothState) {
                 mCustomService.stopScaninBackground();
                 mCustomService.startScanInBackground();
                 updateList(mCustomService.getScannedList());
@@ -204,7 +220,7 @@ public class ScanDevicesActivity extends AppCompatActivity {
         }
     };
 
-    public Context getContext(){
+    public Context getContext() {
         return this;
     }
 
@@ -220,7 +236,7 @@ public class ScanDevicesActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(isBound){
+        if (isBound) {
             unbindService(mConnection);
         }
         unregisterReceiver(receiver);
@@ -242,6 +258,16 @@ public class ScanDevicesActivity extends AppCompatActivity {
      */
     private void requestBluetoothEnable() {
         Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
 

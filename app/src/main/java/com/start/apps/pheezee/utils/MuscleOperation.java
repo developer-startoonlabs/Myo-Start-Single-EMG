@@ -125,14 +125,14 @@ public class MuscleOperation {
 
 
                     },
-                   /* {// Medial Rotation - 5
+                    /* {// Medial Rotation - 5
 
-                            "Pectoralis Major","Latissimus Dorsi","Subscapularis","Teres Major","Pectoralis Minor",
-                             "Deltoid",  "Biceps",
-                            "Coracobrachialis", "Serratus Anterior", "Infraspinatus", "Teres Minor", "Trapezius","Supraspinatus","Others"
+                             "Pectoralis Major","Latissimus Dorsi","Subscapularis","Teres Major","Pectoralis Minor",
+                              "Deltoid",  "Biceps",
+                             "Coracobrachialis", "Serratus Anterior", "Infraspinatus", "Teres Minor", "Trapezius","Supraspinatus","Others"
 
 
-                    },*/
+                     },*/
                     /*{// Lateral Rotation - 5
 
                             "Infraspinatus","Teres Minor","Serratus Anterior","Trapezius",
@@ -188,7 +188,7 @@ public class MuscleOperation {
                     {// Wrist Flexion - 0
 
                             "Flexor Carpi Radialis","Flexor Carpi Ulnaris","Palmaris Longus","Flexor Pollicis Longus (Deep)","Flexor Digitorum Superficialis (Intermediate)","Flexor Digitorum Profundus (Deep)",
-                              "Extensor Carpi Radialis Longus","Extensor Carpi Radialis Brevis","Extensor Digitorum", "Extensor Carpi Ulnaris", "Extensor Digiti Minimi", "Others"
+                            "Extensor Carpi Radialis Longus","Extensor Carpi Radialis Brevis","Extensor Digitorum", "Extensor Carpi Ulnaris", "Extensor Digiti Minimi", "Others"
 
 
                     },
@@ -240,9 +240,9 @@ public class MuscleOperation {
                             "Soleus","Gastrocnemius","Plantaris","Peroneus Longus",
                             "Peroneus Brevis","Flexor Digitorum Longus (Deep)","Flexor Hallucis Longus (Deep)","Tibialis Posterior (Deep)",
 
-                             "Tibialis Anterior",
+                            "Tibialis Anterior",
                             "Extensor Digitorum Longus", "Extensor Hallucis Longus", "Peroneus Tertius",
-                              "Others"
+                            "Others"
 
 
                     },
@@ -271,8 +271,8 @@ public class MuscleOperation {
                             "Tibialis Anterior","Soleus","Gastrocnemius","Extensor Hallucis Longus","Flexor Digitorum Longus (Deep)",
                             "Flexor Hallucis Longus (Deep)","Tibialis Posterior (Deep)",
 
-                             "Plantaris",
-                              "Extensor Digitorum Longus",  "Peroneus Tertius",
+                            "Plantaris",
+                            "Extensor Digitorum Longus",  "Peroneus Tertius",
                             "Peroneus Longus", "Peroneus Brevis", "Others"
 
 
@@ -283,7 +283,7 @@ public class MuscleOperation {
 
                             "Gastrocnemius", /*"superficial-Part of Triceps Surae",*/ "Soleus", "Plantaris",
                             "Flexor Digitorum Longus (Deep)", "Flexor Hallucis Longus (Deep)", "Tibialis Posterior (Deep)", "Tibialis Anterior",
-                             "Extensor Hallucis Longus", "Others"
+                            "Extensor Hallucis Longus", "Others"
 
 
                     }
@@ -333,9 +333,9 @@ public class MuscleOperation {
                             "Gluteus Maximus","Biceps Femoris","Gluteus Medius","Semimembranosus",
                             "Semitendinosus","Adductor Magnus",
                             "Rectus Femoris", "Sartorius", "Pectineus (Deep)",
-                             "Tensor Fasciae Latae", "Adductor Longus",
+                            "Tensor Fasciae Latae", "Adductor Longus",
                             "Adductor Brevis","Psoas Major","Iliacus",
-                             "Gracilis","Piriformis (Deep)",
+                            "Gracilis","Piriformis (Deep)",
                             "Superior Gemellus (Deep)", "Obturator Internus (Deep)","Inferior Gemellus (Deep)", "Quadratus Femoris (Deep)","Obturator Externus (Deep)", "Others"
 
 
@@ -584,7 +584,7 @@ public class MuscleOperation {
                     },
                     {// Lumbar Rotation - 4
                             // Primary
-                           "Rectus Abdominis","Psoas major","Iliocostalis Lumborum","Quadratus Lumborum","Multifidus","Rotatores","External Oblique","Others"
+                            "Rectus Abdominis","Psoas major","Iliocostalis Lumborum","Quadratus Lumborum","Multifidus","Rotatores","External Oblique","Others"
 
 
                     }
@@ -733,11 +733,11 @@ public class MuscleOperation {
                     },
                     {// Shoulder Adduction - 3
                             { // Primary
-                                "Pectoralis Major","Latissimus Dorsi"
+                                    "Pectoralis Major","Latissimus Dorsi"
 
                             },
                             { // Secondary
-                                "Teres Major","Subscapularis"
+                                    "Teres Major","Subscapularis"
                             }
 
                     },
@@ -1130,7 +1130,7 @@ public class MuscleOperation {
 
                             },
                             { // Secondary
-                                    "" 
+                                    ""
                             }
 
                     },
@@ -1228,108 +1228,108 @@ public class MuscleOperation {
 
             },
             { // Thoracic - 7
-            {// Thoracic Flexion - 0
-                    { // Primary
-                            ""
+                    {// Thoracic Flexion - 0
+                            { // Primary
+                                    ""
+
+                            },
+                            { // Secondary
+                                    ""
+                            }
 
                     },
-                    { // Secondary
-                            ""
+                    {// Thoracic Extension - 1
+                            { // Primary
+                                    "Spinalis Thoracis","Longissimus Thoracis","Iliocostalis Thoracis"
+
+                            },
+                            { // Secondary
+                                    ""
+                            }
+
+                    },
+                    {// Thoracic Isometric - 2
+                            { // Primary
+                                    "Spinalis Thoracis","Longissimus Thoracis","Iliocostalis Thoracis"
+                            },
+                            { // Secondary
+                                    "Semispinalis Thoracis","Others"
+                            }
+
+                    },
+                    {// Thoracic Lateral Flexion - 3
+                            { // Primary
+                                    ""
+
+                            },
+                            { // Secondary
+                                    ""
+                            }
+
+                    },
+                    {// Thoracic Rotation - 4
+                            { // Primary
+                                    ""
+
+                            },
+                            { // Secondary
+                                    ""
+                            }
+
                     }
 
             },
-            {// Thoracic Extension - 1
-                    { // Primary
-                            "Spinalis Thoracis","Longissimus Thoracis","Iliocostalis Thoracis"
-
-                    },
-                    { // Secondary
-                            ""
-                    }
-
-            },
-            {// Thoracic Isometric - 2
-                    { // Primary
-                            "Spinalis Thoracis","Longissimus Thoracis","Iliocostalis Thoracis"
-                    },
-                    { // Secondary
-                            "Semispinalis Thoracis","Others"
-                    }
-
-            },
-            {// Thoracic Lateral Flexion - 3
-                    { // Primary
-                            ""
-
-                    },
-                    { // Secondary
-                            ""
-                    }
-
-            },
-            {// Thoracic Rotation - 4
-                    { // Primary
-                            ""
-
-                    },
-                    { // Secondary
-                            ""
-                    }
-
-            }
-
-    },
             { // Lumbar - 7
-            {// Lumbar Flexion - 0
-                    { // Primary
-                            "Rectus Abdominis","Psoas major"
+                    {// Lumbar Flexion - 0
+                            { // Primary
+                                    "Rectus Abdominis","Psoas major"
+
+                            },
+                            { // Secondary
+                                    ""
+                            }
 
                     },
-                    { // Secondary
-                            ""
-                    }
+                    {// Lumbar Extension - 1
+                            { // Primary
+                                    "Iliocostalis Lumborum","Quadratus Lumborum",
 
-            },
-            {// Lumbar Extension - 1
-                    { // Primary
-                            "Iliocostalis Lumborum","Quadratus Lumborum",
-
-                    },
-                    { // Secondary
-                            ""
-                    }
-
-            },
-            {// Lumbar Isometric - 2
-                    { // Primary
-                            "Rectus Abdominis","Psoas major","Iliocostalis Lumborum","Quadratus Lumborum","Multifidus","Rotatores","External Oblique"                  },
-                    { // Secondary
-                            ""
-                    }
-
-            },
-            {// Lumbar Lateral Flexion - 3
-                    { // Primary
-                          "Psoas major","Iliocostalis Lumborum","Quadratus Lumborum","External Oblique"
+                            },
+                            { // Secondary
+                                    ""
+                            }
 
                     },
-                    { // Secondary
-                            ""
-                    }
-
-            },
-            {// Lumbar Rotation - 4
-                    { // Primary
-                           "Multifidus","Rotatores","External Oblique"
+                    {// Lumbar Isometric - 2
+                            { // Primary
+                                    "Rectus Abdominis","Psoas major","Iliocostalis Lumborum","Quadratus Lumborum","Multifidus","Rotatores","External Oblique"                  },
+                            { // Secondary
+                                    ""
+                            }
 
                     },
-                    { // Secondary
-                            ""
+                    {// Lumbar Lateral Flexion - 3
+                            { // Primary
+                                    "Psoas major","Iliocostalis Lumborum","Quadratus Lumborum","External Oblique"
+
+                            },
+                            { // Secondary
+                                    ""
+                            }
+
+                    },
+                    {// Lumbar Rotation - 4
+                            { // Primary
+                                    "Multifidus","Rotatores","External Oblique"
+
+                            },
+                            { // Secondary
+                                    ""
+                            }
+
                     }
 
             }
-
-    }
 
     };
 

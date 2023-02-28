@@ -206,7 +206,7 @@ public class SessionReportListArrayAdapter extends ArrayAdapter<SessionListClass
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        if(WriteResponseBodyToDisk.checkFileInDisk(patientId+date) && !sharedPreferences.getBoolean(patientId+date,false))
+        if(WriteResponseBodyToDisk.checkFileInDisk(patientId+date) && !sharedPreferences.getBoolean(patientId+date,true))
         {
 
             Intent target = new Intent(Intent.ACTION_VIEW);
@@ -240,7 +240,7 @@ public class SessionReportListArrayAdapter extends ArrayAdapter<SessionListClass
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        if(WriteResponseBodyToDisk.checkFileInDisk(patientId+date) && !sharedPreferences.getBoolean(patientId+date,false))
+        if(WriteResponseBodyToDisk.checkFileInDisk(patientId+date) && !sharedPreferences.getBoolean(patientId+date,true))
         {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".my.package.name.provider", WriteResponseBodyToDisk.GetFileFromDisk(patientId+date));

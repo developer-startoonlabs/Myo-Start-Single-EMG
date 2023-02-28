@@ -914,9 +914,9 @@ public class SessionReportActivity extends AppCompatActivity implements MqttSync
 
     private void checkPermissionsRequired() {
         //external storage permission
-        if (ContextCompat.checkSelfPermission(SessionReportActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(SessionReportActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-        }
+//        if (ContextCompat.checkSelfPermission(SessionReportActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(SessionReportActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+//        }
     }
 
 

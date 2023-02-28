@@ -128,6 +128,7 @@ public class LoginActivity extends AppCompatActivity implements MqttSyncReposito
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (NetworkOperations.isNetworkAvailable(LoginActivity.this)) {
                     str_login_email = et_mail.getText().toString();
                     str_login_password = et_password.getText().toString();
@@ -142,7 +143,9 @@ public class LoginActivity extends AppCompatActivity implements MqttSyncReposito
                         showToast(RegexOperations.getNonValidMessageLogin(str_login_email,str_login_password));
                     }
                 }
-                else { NetworkOperations.networkError(LoginActivity.this); }
+                else { NetworkOperations.networkError(LoginActivity.this);
+                 Toast.makeText(LoginActivity.this,"Please Connect to internet", Toast.LENGTH_LONG).show();
+                }
 
             }
         });

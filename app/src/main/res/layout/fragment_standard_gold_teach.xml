@@ -163,9 +163,20 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
-
-
-
+                <TextView
+                    android:id="@+id/login_page"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="@font/ebrima"
+                    android:text="Login"
+                    android:textColor="@color/good_green"
+                    android:layout_marginEnd="20dp"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
             </LinearLayout>
 
 
@@ -190,6 +201,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
+                    android:visibility="gone"
                     android:orientation="horizontal">
                     <TextView
                         android:id="@+id/title_ROM"
@@ -245,6 +257,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:id="@+id/monitor_rom"
+                    android:visibility="gone"
                     android:layout_height="wrap_content">
 
                     <LinearLayout

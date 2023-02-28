@@ -1,5 +1,9 @@
 package com.start.apps.pheezee.popup;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -11,9 +15,12 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,6 +43,8 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import start.apps.pheezee.R;
+
+import com.start.apps.pheezee.activities.PatientsView;
 import com.start.apps.pheezee.pojos.PatientDetailsData;
 import com.start.apps.pheezee.room.Entity.PhizioPatients;
 import com.bumptech.glide.Glide;
@@ -208,10 +217,12 @@ public class EditPopUpWindow {
 
         patientName.setText(patient.getPatientname());
         patientAge.setText(patient.getPatientage());
-        if(patient.getPatientgender().equalsIgnoreCase("M"))
+        if(patient.getPatientgender().equalsIgnoreCase("Male")) {
             radioGroup.check(btn_male.getId());
-        else
+        }
+        else{
             radioGroup.check(btn_female.getId());
+        }
         caseDescription.setText(patient.getPatientcasedes());
         case_description[0] = patient.getPatientcasedes();
         addBtn.setOnClickListener(new View.OnClickListener() {
@@ -280,10 +291,58 @@ public class EditPopUpWindow {
 
                         if(camera_selected==true)
                         {
-                            if(ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-                                    == PackageManager.PERMISSION_DENIED) {
+                            if(ContextCompat.checkSelfPermission(context,CAMERA) == PackageManager.PERMISSION_DENIED) {
+
+                                final Dialog dialog = new Dialog(context);
+                                dialog.setContentView(R.layout.notification_dialog_box);
+
+                                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                                lp.copyFrom(dialog.getWindow().getAttributes());
+                                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+                                dialog.getWindow().setAttributes(lp);
+
+                                TextView notification_title = dialog.findViewById(R.id.notification_box_title);
+                                TextView notification_message = dialog.findViewById(R.id.notification_box_message);
+
+                                Button Notification_Button_ok = (Button) dialog.findViewById(R.id.notification_ButtonOK);
+                                Button Notification_Button_cancel = (Button) dialog.findViewById(R.id.notification_ButtonCancel);
+
+                                Notification_Button_ok.setText("Yes");
+                                Notification_Button_cancel.setText("No");
+
+                                // Setting up the notification dialog
+                                notification_title.setText("Camera permission request");
+                                notification_message.setText("Pheezee app needs camera permission \n to access camera");
+
+                                // On click on Continue
+                                Notification_Button_ok.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if(ContextCompat.checkSelfPermission(context, CAMERA) == PackageManager.PERMISSION_DENIED) {
+                                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                            Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+                                            intent.setData(uri);
+                                            context.startActivity(intent);
+                                            dialog.dismiss();
+
+                                        }
+                                    }
+                                });
+                                // On click Cancel
+                                Notification_Button_cancel.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.dismiss();
+
+                                    }
+                                });
+
+                                dialog.show();
+                            } else if(ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                                 pw.dismiss();
-                                ActivityCompat.requestPermissions(((Activity)context), new String[]{Manifest.permission.CAMERA}, 5);
+//                                ActivityCompat.requestPermissions(((Activity)context), new String[]{Manifest.permission.CAMERA}, 5);
                                 cameraIntent();
                             }
                             else {
@@ -295,14 +354,66 @@ public class EditPopUpWindow {
 
                         }else if(gallery_selected==true)
                         {
-                            galleryIntent();
-                            pw.dismiss();
-                            dialog.dismiss();
-                        }else
-                        {
-                            Toast.makeText(context, "Please select any one option.", Toast.LENGTH_SHORT).show();
-                        }
+                            if(ContextCompat.checkSelfPermission(context,READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+//                                Log.i("Location_status:","working");
+                                final Dialog dialog = new Dialog(context);
+                                dialog.setContentView(R.layout.notification_dialog_box);
 
+                                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                                lp.copyFrom(dialog.getWindow().getAttributes());
+                                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+                                dialog.getWindow().setAttributes(lp);
+
+                                TextView notification_title = dialog.findViewById(R.id.notification_box_title);
+                                TextView notification_message = dialog.findViewById(R.id.notification_box_message);
+
+                                Button Notification_Button_ok = (Button) dialog.findViewById(R.id.notification_ButtonOK);
+                                Button Notification_Button_cancel = (Button) dialog.findViewById(R.id.notification_ButtonCancel);
+
+                                Notification_Button_ok.setText("Yes");
+                                Notification_Button_cancel.setText("No");
+
+                                // Setting up the notification dialog
+                                notification_title.setText("Storage permission request");
+                                notification_message.setText("Pheezee app needs storage permission \n to access your gallery");
+
+                                // On click on Continue
+                                Notification_Button_ok.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if(ContextCompat.checkSelfPermission(context, READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                            Uri uri = Uri.fromParts("package", context.getPackageName(), null);
+                                            intent.setData(uri);
+                                            context.startActivity(intent);
+                                            dialog.dismiss();
+
+                                        }
+                                    }
+                                });
+                                // On click Cancel
+                                Notification_Button_cancel.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.dismiss();
+
+                                    }
+                                });
+
+                                dialog.show();
+                            } else if(ContextCompat.checkSelfPermission(context, READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                                galleryIntent();
+                                pw.dismiss();
+                                dialog.dismiss();
+                            }
+                            else {
+                                pw.dismiss();
+                                galleryIntent();
+                            }
+
+                        }
 
                     }
                 });

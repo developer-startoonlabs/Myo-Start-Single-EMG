@@ -13,7 +13,7 @@
     <string name="start_clinic_session">Start Clinic Session</string>
     <string name="title_activity_scan_devices">ScanDevicesActivity</string>
     <string name="repetition">Repetitions</string>
-    <string name="copy_rights">2021, Startoon Labs Pvt. Ltd.</string>
+    <string name="copy_rights">2022, Startoon Labs Pvt. Ltd.</string>
     <string name="feature_not_available">This feature is not available in current package. Please upgrade to <b>Gold</b> or <b>Gold Plus</b> to avail this feature.</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -193,7 +193,7 @@
     <!--Appinfo related tags-->
     <string name="app_info">App Info</string>
     <string name="app_version">Application Version</string>
-    <string name="application_version">3.0.13</string>
+    <string name="application_version">Ngrok</string>
     <string name="user_manual_version">User Manual</string>
     <string name="Paragraph">In the computer world, a bug is an error in a software program. <H>It</H>may cause a program to unexpectedly quit or behave in an unintended manner. For example, a small bug may cause a button within a programs interface not to respond when you click it \n Most bugs occur due to the mistakes and errors made by the developers while constructing the source code. It can be within the components and operating system which is used by the program. Some bugs are also the result of errors in translation between different languages by compilers which produce the incorrect code.
     </string>
